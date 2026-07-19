@@ -1,19 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CourseService } from 'src/course/course.service';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class EnrollmentService {
-  constructor(private courseService: CourseService) {}
+  constructor(
+    private courseService: CourseService,
+    @Inject(forwardRef(() => NotificationService))
+    private notificationService: NotificationService,
+  ) {}
+  // constructor(private notificationService: NotificationService) {}
   studentInfo = [
-    {},
-    // {
-    //   studentName: 'siam',
-    //   courseId: 101,
-    // },
-    // {
-    //   studentName: 'ayon',
-    //   courseId: 102,
-    // },
+    {
+      studentName: 'siam',
+      courseId: 101,
+    },
+    {
+      studentName: 'ayon',
+      courseId: 102,
+    },
   ];
 
   getEnrollments() {
@@ -21,13 +26,21 @@ export class EnrollmentService {
   }
 
   enrollStudent(info: { studentName: string; courseId: number }) {
-    const checkIfIdExist = this.courseService.getCourseById(info.courseId);
-    console.log(checkIfIdExist);
-    if (!checkIfIdExist) {
-      return 'no course fond';
+    const course = this.courseService.getCourseById(info.courseId);
+    if (course === 'course not found') {
+      return 'no course found';
     }
     const newEnrollment = { ...info };
     this.studentInfo.push(newEnrollment);
-    return { message: 'Student enrolled successfully', data: newEnrollment };
+    const notification = this.notificationService.sendNotification(
+      info.studentName,
+      'You have been enrolled successfully',
+    );
+    return {
+      message: 'Student enrolled successfully',
+      student: info.studentName,
+      course,
+      notification,
+    };
   }
 }

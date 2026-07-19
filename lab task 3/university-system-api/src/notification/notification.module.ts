@@ -1,9 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
+import { EnrollmentModule } from 'src/enrollment/enrollment.module';
 
 @Module({
   controllers: [NotificationController],
-  providers: [NotificationService]
+  providers: [NotificationService],
+  imports: [forwardRef(() => EnrollmentModule)],
+  exports: [NotificationService],
 })
 export class NotificationModule {}

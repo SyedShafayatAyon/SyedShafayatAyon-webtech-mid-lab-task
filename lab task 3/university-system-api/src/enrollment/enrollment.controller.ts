@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { EnrollmentService } from './enrollment.service';
-import { get } from 'http';
 
 @Controller('enrollment')
 export class EnrollmentController {

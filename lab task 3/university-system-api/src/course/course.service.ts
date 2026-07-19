@@ -24,7 +24,7 @@ export class CourseService {
     if (!course) {
       return 'course not found';
     }
-    return { message: 'Course fetched', data: course?.id };
+    return { message: 'Course fetched', id, data: course };
   }
 
   createCourse(info: { name: string; code: string }) {
